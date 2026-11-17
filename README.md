@@ -1,10 +1,10 @@
-# Team Tiki-Data — our submission
+# Team Tiki-Data submission
 
-This is team **Tiki-Data**'s fork of the challenge repository. Our approach, the assets we used,
-our possession rules and limitations are in the technical document, **[Tiki-Data.md](Tiki-Data.md)**.
+This is team Tiki-Data's fork of the challenge repository. Our approach, the assets we used,
+our possession rules and the limitations are in the technical document, [Tiki-Data.md](Tiki-Data.md).
 
-**Reproduce the submission** (Python 3.11, data bundle unpacked into `data/` per
-[data/README.md](data/README.md) — the data is not in this repository):
+To reproduce the submission you need Python 3.11 and the data bundle unpacked into `data/` as
+described in [data/README.md](data/README.md). The data is not in this repository.
 
 ```bash
 python3.11 -m venv .venv && source .venv/bin/activate
