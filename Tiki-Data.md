@@ -17,16 +17,20 @@ is learned and no labelled data is used. Every constant comes from football reas
 label-free measurements of this match's tracking, and the reason is written next to where it is
 defined.
 
+The approach numbers come from our original team plan. Approaches 1, 3 and 4 produce evidence,
+approach 2 is the HMM that decodes it (§3.6), and approach 5, our own ball detection from the
+video, was never built.
+
 ```
  tracking (ATD) ─┬─► approach 1: who controls the ball          ─┐
-                 ├─► approach 3: dead balls + restarts  ◄─ tags ─┼─► product of experts ─► HMM ─► Tiki-Data.csv
+                 ├─► approach 3: dead balls + restarts  ◄─ tags ─┼─► product of experts ─► approach 2: HMM ─► Tiki-Data.csv
                  └─► approach 4: team shape (who, when no ball) ─┘      (src/glue.py)        (src/hmm.py)
 ```
 
 ## 2. Why this design
 
-- spellF1 matches whole possessions by temporal IoU rather than scoring frames, so a single
-  flickering frame creates a spurious possession and costs as much as a whole missed one. A decoder
+- spellF1 scores whole possessions, matched by temporal IoU, so a single flickering frame creates
+  a spurious possession and costs as much as a whole missed one. A decoder
   with minimum durations and an explicit cost per change of possession addresses that directly. A
   sliding majority vote (the baseline) only blurs it.
 - The three kinds of evidence cover different frames. Ball control speaks when a player has the
@@ -41,7 +45,7 @@ defined.
 
 ### 3.1 Shared frame table (`src/load.py`)
 
-Parses the tactical ATD once into a cached table indexed by video frame (ATD `frame_id` − 1), in
+We parse the tactical ATD once into a cached table indexed by video frame (ATD `frame_id` − 1), in
 metres on a 105.3 × 68 m pitch: ball position, ball speed (centred difference, because the ATD's own
 ball-speed field is unusable), players, team of each track slot, distance to the nearest H and A
 player, and the graded half of each frame. Player speed is in m/s (checked against positions: ratio
@@ -120,7 +124,7 @@ approach 1 = 1, approach 3 = 1, approach 4 = 1/3.
   cannot outvote the ball. The masked check in §7 shows that it helps, and that 2/3 instead of 1/3
   would change nothing beyond noise.
 
-### 3.6 Decoding (`src/hmm.py`)
+### 3.6 Approach 2: decoding (`src/hmm.py`)
 
 States H, A, D, decoded per half (nothing carried across halftime; frames outside the halves are X).
 - Minimum durations come from chains of sub-states. A possession lasts ≥ 1 s: a first touch alone
@@ -179,8 +183,8 @@ Tried and dropped:
 
 ## 5. Training data
 
-None. No labelled dataset of any kind was used, from this game or any other. No frame of the
-provided game was labelled or corrected by hand. The public 5-minute ground truth was used only to
+None. We used no labelled data of any kind, from this game or any other, and nobody labelled or
+corrected a frame of the provided game by hand. The public 5-minute ground truth was used only to
 check the pipeline end to end (file format, frame alignment, labels meaning what we think). It was
 never used to choose a constant or a weight; each one is set by the reasoning written next to it.
 On 17 public possessions the differences between the variants we ran were all within noise anyway.
