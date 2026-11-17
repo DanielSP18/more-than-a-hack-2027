@@ -1,0 +1,11 @@
+# Everything our pipeline (src/) and the evaluation need, pinned to the versions that produced
+# out/Tiki-Data.csv. Python 3.11.
+#
+#     pip install -r requirements.txt
+#
+# Optional tooling for the organisers' starter notebooks -- the ATD loader and anything that opens
+# the video -- lives in requirements-starter.txt and is not needed to reproduce the submission.
+numpy==2.4.6
+pandas==3.1.1
+python-dateutil==4.0.0
+tzdata==2026.6
